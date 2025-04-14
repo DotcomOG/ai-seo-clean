@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "description": "AI-powered SEO analysis tool",
+  "deployTrigger": "node-fetch-fixed",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
