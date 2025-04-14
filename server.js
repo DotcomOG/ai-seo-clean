@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
+const axios = require('axios');
 const { Configuration, OpenAIApi } = require('openai');
 
 const app = express();
@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
   res.send('🎯 AI SEO Server is live!');
 });
 
-// Main endpoint
+// Main analysis route
 app.get('/friendly', async (req, res) => {
   const url = req.query.url;
   if (!url) {
@@ -28,7 +28,8 @@ app.get('/friendly', async (req, res) => {
   }
 
   try {
-    const axios = require('axios');
+    const response = await axios.get(url);
+    const html = response.data;
 
     const prompt = `Analyze this webpage for AI SEO friendliness:\n\n${html}\n\nReturn JSON in this format:\n{
       "score": 0-100,
@@ -58,8 +59,8 @@ app.get('/friendly', async (req, res) => {
 
     res.json({ lines });
   } catch (err) {
-    console.error('❌ OpenAI API error:', err);
-    res.status(500).json({ error: 'OpenAI call failed', details: err.message });
+    console.error('❌ OpenAI API error or Axios failed:', err);
+    res.status(500).json({ error: 'OpenAI call or page fetch failed', details: err.message });
   }
 });
 
