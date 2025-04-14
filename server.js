@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -9,11 +9,10 @@ const port = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
-// OpenAI config
-const configuration = new Configuration({
+// OpenAI client
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 // Health check route
 app.get('/', (req, res) => {
@@ -44,23 +43,20 @@ app.get('/friendly', async (req, res) => {
       }
     }`;
 
-    const aiResponse = await openai.createChatCompletion({
+    const aiResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
     });
 
-    const output = aiResponse.data.choices[0].message.content;
+    const output = aiResponse.choices[0].message.content;
     console.log('🔍 RAW OpenAI Output:\n', output);
 
     const lines = output.split('\n');
-    console.log('\n📦 Line-by-line breakdown:');
-    lines.forEach((line, i) => console.log(`${i + 1}: ${line}`));
-
     res.json({ lines });
   } catch (err) {
-    console.error('❌ OpenAI API error or Axios failed:', err);
-    res.status(500).json({ error: 'OpenAI call or page fetch failed', details: err.message });
+    console.error('❌ Error:', err);
+    res.status(500).json({ error: 'Failed to process AI SEO analysis', details: err.message });
   }
 });
 
