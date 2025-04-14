@@ -28,8 +28,7 @@ app.get('/friendly', async (req, res) => {
   }
 
   try {
-    const response = await fetch(url);
-    const html = await response.text();
+    const axios = require('axios');
 
     const prompt = `Analyze this webpage for AI SEO friendliness:\n\n${html}\n\nReturn JSON in this format:\n{
       "score": 0-100,
