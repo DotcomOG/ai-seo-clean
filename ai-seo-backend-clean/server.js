@@ -6,8 +6,6 @@ const OpenAI = require('openai');
 const app = express();
 const port = process.env.PORT || 8080;
 
-
-// ✅ Allow only Vercel frontend to access
 app.use(cors({
   origin: 'https://ai-seo-clean.vercel.app'
 }));
@@ -55,7 +53,7 @@ app.get('/friendly', async (req, res) => {
     const lines = output.split('\n');
     res.json({ lines });
   } catch (err) {
-    console.error('❌ Error:', err);
+    console.error('❌ Error in /friendly:', err);
     res.status(500).json({ error: 'Failed to process AI SEO analysis', details: err.message });
   }
 });

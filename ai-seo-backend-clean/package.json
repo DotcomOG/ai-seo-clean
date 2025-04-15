@@ -1,19 +1,14 @@
 {
-  "name": "ai-seo-clean",
+  "name": "ai-seo-backend-clean",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "AI-powered SEO analysis tool",
-  "deployTrigger": "node-fetch-fixed",
   "dependencies": {
-    "axios": "^1.8.4",
+    "axios": "^1.6.5",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "openai": "^4.94.0"
+    "express": "^4.19.2",
+    "openai": "^4.30.1"
   }
 }
