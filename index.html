@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>SnipeRank SEO Summary Report</title>
   <link href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
-    /* Styles are unchanged, kept as provided in your last upload */
     body { font-family:'Nunito Sans',sans-serif;background:#f9f9f9;margin:0;padding:0; }
     header { text-align:center;padding:15px;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,0.1); }
     .container { max-width:700px;margin:30px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1); }
@@ -90,7 +88,6 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
   document.getElementById('analyzeButton').onclick = () => {
     const url = document.getElementById('urlInput').value.trim();
     if(url) window.location.href = `/index.html?url=${encodeURIComponent(url)}`;
@@ -102,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('url-lightbox').style.display = 'none';
     document.getElementById('inspected-url').textContent = urlParam;
 
-    fetch(`/friendly?url=${encodeURIComponent(urlParam)}&t=${new Date().getTime()}`, { cache: "no-store" })
+    fetch(`https://ai-seo-clean-production.up.railway.app/friendly?url=${encodeURIComponent(urlParam)}&t=${new Date().getTime()}`, { cache: "no-store" })
     .then(res => res.json())
     .then(data => {
       if(data.status==="processing"){
@@ -126,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById('scoreInfo').onclick=()=>document.getElementById('score-lightbox').style.display='flex';
   document.getElementById('score-lightbox-close').onclick=()=>document.getElementById('score-lightbox').style.display='none';
-
 });
 </script>
 
