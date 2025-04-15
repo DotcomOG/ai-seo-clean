@@ -6,20 +6,22 @@ const OpenAI = require('openai');
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use(cors());
+
+// ✅ Allow only Vercel frontend to access
+app.use(cors({
+  origin: 'https://ai-seo-clean.vercel.app'
+}));
+
 app.use(express.json());
 
-// OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Health check route
 app.get('/', (req, res) => {
   res.send('🎯 AI SEO Server is live!');
 });
 
-// Main analysis route
 app.get('/friendly', async (req, res) => {
   const url = req.query.url;
   if (!url) {
@@ -50,8 +52,6 @@ app.get('/friendly', async (req, res) => {
     });
 
     const output = aiResponse.choices[0].message.content;
-    console.log('🔍 RAW OpenAI Output:\n', output);
-
     const lines = output.split('\n');
     res.json({ lines });
   } catch (err) {
