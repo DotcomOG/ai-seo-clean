@@ -102,21 +102,20 @@
         document.getElementById('url-lightbox').style.display = 'none';
         document.getElementById('inspected-url').textContent = urlParam;
 
-        fetch("https://ai-seo-final-docker.up.railway.app/friendly?url=" + encodeURIComponent(urlParam) + "&t=" + new Date().getTime(), { cache: "no-store" })
-          .then(res => res.json())
-          .then(data => {
-            document.getElementById("score-marker").style.left = data.score + '%';
-            document.getElementById("score-marker").style.animation = 'none';
-            document.getElementById("score-percentage").textContent = data.score + "%";
-            document.getElementById("waiting-message").style.display = 'none';
+        fetch("https://ai-seo-backend-live-production.up.railway.app/friendly?url=" + encodeURIComponent(urlParam) + "&t=" + new Date().getTime(), { cache: "no-store" })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("score-marker").style.left = data.score + '%';
+    document.getElementById("score-marker").style.animation = 'none';
+    document.getElementById("score-percentage").textContent = data.score + "%";
+    document.getElementById("waiting-message").style.display = 'none';
 
-            ["superpowers-list", "opportunities-list", "engine-insights-list"].forEach((id, i) => {
-              document.getElementById(id).innerHTML = data[Object.keys(data)[i + 1]].map(item =>
-                `<li><strong>${item.title}</strong><p>${item.explanation}</p></li>`
-              ).join('');
-            });
-          })
-          .catch(err => {
+    ["superpowers-list", "opportunities-list", "engine-insights-list"].forEach((id, i) => {
+      document.getElementById(id).innerHTML = data[Object.keys(data)[i + 1]].map(item =>
+        `<li><strong>${item.title}</strong><p>${item.explanation}</p></li>`
+      ).join('');
+    });
+  });  .catch(err => {
             document.getElementById("waiting-message").textContent = "❌ Failed to fetch AI SEO data.";
             console.error(err);
           });
