@@ -2,72 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Full AI SEO Report</title>
-  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family:'Nunito Sans',sans-serif;background:#f1f1f1;margin:0;padding:0; }
-    header { text-align:center;padding:20px;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    .container { max-width:800px;margin:30px auto;background:#fff;padding:25px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-    h1,h2 { font-family:'Forum',serif;text-align:center;color:#333; }
-    li { margin-bottom:10px; }
-    .category { font-size:1.2em;margin-top:25px;color:#007BFF; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-white text-black font-sans p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- SECTION 1: TITLE -->
+    <h1 class="text-4xl font-bold mb-6">Full AI SEO Report</h1>
 
-<header>
-  <h1>Full AI SEO Report</h1>
-</header>
+    <!-- SECTION 2: DISPLAY ANALYSIS RESULT -->
+    <div id="reportContainer" class="space-y-8">
+      <div>
+        <h2 class="text-2xl font-semibold">Overall Score</h2>
+        <p id="score" class="text-3xl mt-2 font-bold text-green-600"></p>
+      </div>
 
-<div class="container">
-  <p><strong>URL:</strong> <span id="url-display">Loading...</span></p>
-  <div id="report"></div>
-</div>
+      <div>
+        <h2 class="text-2xl font-semibold">What's Working for AI SEO ✅</h2>
+        <ul id="superpowersList" class="list-disc ml-6 mt-2 text-green-800"></ul>
+      </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const url = new URLSearchParams(window.location.search).get("url");
-  document.getElementById("url-display").textContent = url;
+      <div>
+        <h2 class="text-2xl font-semibold">What Needs Improvement 🛠</h2>
+        <ul id="opportunitiesList" class="list-disc ml-6 mt-2 text-red-700"></ul>
+      </div>
 
-  fetch(`https://ai-seo-backend-final.up.railway.app/friendly?url=${encodeURIComponent(url)}&detail=full`)
-    .then(res => res.json())
-    .then(data => {
-      const report = document.getElementById("report");
+      <div>
+        <h2 class="text-2xl font-semibold">AI Engine Feedback 💡</h2>
+        <ul id="engineInsightsList" class="ml-4 mt-2 space-y-1 text-gray-800"></ul>
+      </div>
+    </div>
 
-      const sections = [
-        { key: "ai_superpowers", title: "Site Superpowers" },
-        { key: "ai_opportunities", title: "Opportunities for Improvement" },
-        { key: "ai_engine_insights", title: "AI Engine-Specific Insights" }
-      ];
+    <!-- SECTION 3: CONTACT FORM -->
+    <div class="mt-12 border-t pt-6">
+      <h2 class="text-2xl font-semibold mb-4">Get a Free Custom AI SEO Plan</h2>
+      <form id="contactForm" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="name" class="block mb-1 font-medium">Name</label>
+            <input type="text" id="name" name="name" class="w-full border border-gray-300 p-2 rounded" required>
+          </div>
+          <div>
+            <label for="email" class="block mb-1 font-medium">Email</label>
+            <input type="email" id="email" name="email" class="w-full border border-gray-300 p-2 rounded" required>
+          </div>
+        </div>
+        <div>
+          <label for="company" class="block mb-1 font-medium">Company / Organization</label>
+          <input type="text" id="company" name="company" class="w-full border border-gray-300 p-2 rounded">
+        </div>
+        <div>
+          <label for="phone" class="block mb-1 font-medium">Phone Number</label>
+          <input type="text" id="phone" name="phone" class="w-full border border-gray-300 p-2 rounded">
+        </div>
+        <button type="submit" class="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">Submit</button>
+      </form>
+      <div id="contactStatus" class="mt-4 text-sm"></div>
+    </div>
+  </div>
 
-      sections.forEach(section => {
-        const sectionData = data[section.key];
-        const title = document.createElement("h2");
-        title.className = "category";
-        title.textContent = section.title;
-        report.appendChild(title);
+  <script>
+    const score = localStorage.getItem("score");
+    const superpowers = JSON.parse(localStorage.getItem("superpowers"));
+    const opportunities = JSON.parse(localStorage.getItem("opportunities"));
+    const engineInsights = JSON.parse(localStorage.getItem("engineInsights"));
+    const name = localStorage.getItem("name") || "";
+    const email = localStorage.getItem("email") || "";
 
-        if (typeof sectionData === "object" && !Array.isArray(sectionData)) {
-          const list = document.createElement("ul");
-          for (const [engine, insight] of Object.entries(sectionData)) {
-            const item = document.createElement("li");
-            item.innerHTML = `<strong>${engine}:</strong> ${insight}`;
-            list.appendChild(item);
-          }
-          report.appendChild(list);
-        } else {
-          const list = document.createElement("ul");
-          sectionData.forEach(item => {
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${item.title}:</strong> ${item.explanation}`;
-            list.appendChild(li);
-          });
-          report.appendChild(list);
-        }
-      });
+    document.getElementById("score").textContent = `${score}/100`;
+
+    const superpowersList = document.getElementById("superpowersList");
+    superpowers.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = `${item.title}: ${item.explanation}`;
+      superpowersList.appendChild(li);
     });
-});
-</script>
 
+    const opportunitiesList = document.getElementById("opportunitiesList");
+    opportunities.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = `${item.title}: ${item.explanation}`;
+      opportunitiesList.appendChild(li);
+    });
+
+    const engineInsightsList = document.getElementById("engineInsightsList");
+    for (const [engine, insight] of Object.entries(engineInsights)) {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${engine}:</strong> ${insight}`;
+      engineInsightsList.appendChild(li);
+    }
+
+    // Pre-fill form values from localStorage
+    document.getElementById("name").value = name;
+    document.getElementById("email").value = email;
+
+    document.getElementById("contactForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      document.getElementById("contactStatus").textContent = "✅ Thank you for your interest. We will contact you for a full analysis.";
+    });
+  </script>
 </body>
 </html>
+
