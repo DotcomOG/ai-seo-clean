@@ -1,0 +1,58 @@
+<!-- 4 20 13:05 -->
+
+/*! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com */
+
+/* Base */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  color: #000;
+}
+
+/* Typography */
+h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs */
+input {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+/* Buttons */
+button {
+  background-color: #000;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1f2937;
+}
+
+/* Headings and labels */
+label {
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Loading text */
+#loading {
+  font-weight: 500;
+  color: #3b82f6; /* Tailwind blue-500 */
+}

@@ -5,64 +5,59 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
-// ✅ Allow all origins during development (change in production)
-app.use(cors());
+// ✅ Allow multiple Vercel frontend URLs
+const allowedOrigins = [
+  "https://ai-seo-clean.vercel.app",
+  "https://ai-seo-clean-lsqpbehnk-yoram-ezras-projects.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
 
 app.use(express.json());
 
-// ✅ Root route (for health check)
+// ✅ Health check
 app.get("/", (req, res) => {
   res.send("👋 Hello from AI SEO backend root route!");
 });
 
-// ✅ The /friendly route
-app.get("/friendly", async (req, res) => {
-  try {
-    const url = req.query.url;
-    if (!url) return res.status(400).json({ error: "URL is required" });
+// ✅ Friendly route (index or full based on ?type=summary|full)
+app.get("/friendly", (req, res) => {
+  const type = req.query.type || "summary";
+  const isFull = type === "full";
 
-    // Generate a dynamic score between 50 and 100
-    const dynamicScore = Math.floor(Math.random() * 51) + 50;
+  const score = Math.floor(Math.random() * 51) + 50;
 
-    // Construct a full simulated response
-    const response = {
-      score: dynamicScore,
-      ai_superpowers: [
-        { title: "Meta Tags", explanation: "Well-formed OG tags." },
-        { title: "Mobile Optimization", explanation: "Responsive meta present." },
-        { title: "Title Tag", explanation: "Descriptive title provided." },
-        { title: "HTTPS", explanation: "Secure connection is active." },
-        { title: "Canonical Tag", explanation: "Canonical URL is specified." }
-      ],
-      ai_opportunities: [
-        { title: "Alt Text", explanation: "Some images lack alt attributes." },
-        { title: "Page Speed", explanation: "Unminified scripts detected." },
-        { title: "Broken Links", explanation: "Some links are broken or outdated." },
-        { title: "No Schema", explanation: "Structured data is missing." },
-        { title: "Missing H1", explanation: "Page lacks a top-level heading." },
-        { title: "Meta Description", explanation: "Meta descriptions are missing or duplicated." },
-        { title: "Mobile Tap Targets", explanation: "Touch targets are too close." },
-        { title: "No Sitemap.xml", explanation: "XML sitemap is not found." },
-        { title: "Robots.txt", explanation: "Robots.txt file is missing or misconfigured." },
-        { title: "Low Word Count", explanation: "Content is too thin." }
-      ],
-      ai_engine_insights: {
-        ChatGPT: "Good structure, but minor accessibility issues.",
-        Gemini: "Great metadata, but large JS payload.",
-        Copilot: "Efficient layout, weak keyword targeting.",
-        Jasper: "Strong CTAs, excellent meta usage."
-      }
-    };
+  const superpowers = Array.from({ length: isFull ? 10 : 5 }, (_, i) => ({
+    title: `AI Superpower ${i + 1}`,
+    explanation: Array.from({ length: isFull ? 6 : 3 }, (_, j) => `AI SEO Superpower line ${j + 1} explaining AI compatibility.`).join("\n")
+  }));
 
-    return res.json(response);
-  } catch (err) {
-    console.error("❌ Error in /friendly route:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+  const opportunities = Array.from({ length: isFull ? 25 : 10 }, (_, i) => ({
+    title: `AI Opportunity ${i + 1}`,
+    explanation: Array.from({ length: isFull ? 10 : 4 }, (_, j) => `AI SEO Opportunity line ${j + 1} explaining what's wrong.`).join("\n")
+  }));
+
+  const ai_engine_insights = {
+    ChatGPT: "Your content hierarchy and semantic clarity are moderately optimized for AI parsing agents.",
+    Gemini: "AI-related meta data is sparse and might cause misclassification for generative indexing.",
+    Copilot: "Excessive embedded JavaScript could block AI-crawlers from extracting meaning.",
+    Jasper: "Structure is clean, but lacks LLM-oriented schema and labels that reinforce content roles."
+  };
+
+  res.json({ score, ai_superpowers: superpowers, ai_opportunities: opportunities, ai_engine_insights });
 });
 
-// ✅ Start the server
+// ✅ Start server
 app.listen(port, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${port}`);
   console.log(`🧠 Loaded version: ai-seo-final-${new Date().toISOString()}`);
 });
+
