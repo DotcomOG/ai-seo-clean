@@ -1,54 +1,65 @@
-<!-- 4/20 12:45 -->
+// Last updated: 2025-04-22 11:17 ET
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const name = localStorage.getItem("name") || "";
-  const email = localStorage.getItem("email") || "";
-  const company = localStorage.getItem("company") || "";
-  const url = prompt("Confirm the website URL to load full analysis:", "https://example.com");
+document.addEventListener('DOMContentLoaded', async () => {
+  const nameVal = localStorage.getItem('name') || '';
+  const emailVal = localStorage.getItem('email') || '';
+  const companyVal = localStorage.getItem('company') || '';
+  const url = localStorage.getItem('targetURL');
 
-  if (!url || !/^https?:\/\/.+/i.test(url)) {
-    alert("Invalid or missing URL. Please refresh and try again.");
-    return;
-  }
+  document.getElementById('targetUrl').textContent = url;
+  document.getElementById('name').value = nameVal;
+  document.getElementById('email').value = emailVal;
+  document.getElementById('company').value = companyVal;
 
   try {
-    const res = await fetch(`https://ai-seo-backend-live-production.up.railway.app/friendly?type=full&url=${encodeURIComponent(url)}`);
+    const res = await fetch(
+      `https://ai-seo-backend-final.onrender.com/friendly?type=full&url=${encodeURIComponent(url)}`
+    );
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
 
-    document.getElementById("score").textContent = `${data.score}/100`;
-
-    const superpowersList = document.getElementById("superpowersList");
+    document.getElementById('score').textContent = data.score;
+    const spList = document.getElementById('superpowersList');
+    spList.innerHTML = '';
     data.ai_superpowers.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = `${item.title}:\n${item.explanation}`;
-      superpowersList.appendChild(li);
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${item.title}:</strong><br>${item.explanation}`;
+      spList.appendChild(li);
     });
 
-    const opportunitiesList = document.getElementById("opportunitiesList");
+    const oppList = document.getElementById('opportunitiesList');
+    oppList.innerHTML = '';
     data.ai_opportunities.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = `${item.title}:\n${item.explanation}`;
-      opportunitiesList.appendChild(li);
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${item.title}:</strong><br>${item.explanation}`;
+      oppList.appendChild(li);
     });
 
-    const engineInsightsList = document.getElementById("engineInsightsList");
-    for (const [engine, insight] of Object.entries(data.ai_engine_insights)) {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${engine}:</strong> ${insight}`;
-      engineInsightsList.appendChild(li);
-    }
+    const insightsList = document.getElementById('engineInsightsList');
+    insightsList.innerHTML = '';
+    Object.entries(data.ai_engine_insights).forEach(([eng, txt]) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${eng}:</strong> ${txt}`;
+      insightsList.appendChild(li);
+    });
+
+    localStorage.setItem('fullData', JSON.stringify(data));
   } catch (err) {
-    console.error("❌ Error loading full report:", err);
-    alert("Something went wrong. Please try again or check the backend.");
+    console.error(err);
+    alert('Failed to load detailed report.');
   }
 
-  document.getElementById("name").value = name;
-  document.getElementById("email").value = email;
-  document.getElementById("company").value = company;
-
-  document.getElementById("contactForm").addEventListener("submit", (e) => {
+  document.getElementById('contactForm').addEventListener('submit', async e => {
     e.preventDefault();
-    document.getElementById("contactStatus").textContent =
-      "✅ Thank you for your interest. We will contact you for a full analysis.";
+    await db.collection('reports').add({
+      name: nameVal,
+      email: emailVal,
+      company: companyVal,
+      url,
+      fullReport: JSON.parse(localStorage.getItem('fullData') || '{}'),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('contactStatus').textContent =
+      '✅ Detailed report request received!';
   });
 });

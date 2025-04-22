@@ -1,30 +1,25 @@
-<!-- Last updated: 2025-04-22 13:50 ET -->
+<!-- Last updated: 2025-04-22 16:50 ET -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>SnipeRank AI‑SEO Summary Report</title>
 
-  <!-- SECTION: Google Fonts START -->
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" 
-    rel="stylesheet"
-  >
-  <!-- SECTION: Google Fonts END -->
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
 
-  <!-- SECTION: STYLES START -->
+  <!-- Styles -->
   <style>
-    body { font-family:'Nunito Sans',sans-serif; background:#f9f9f9; margin:0; padding:0 }
-    header { text-align:center; padding:15px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1) }
-    .container { max-width:700px; margin:30px auto; background:#fff; padding:20px; border-radius:8px }
+    body { font-family: 'Nunito Sans', sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
+    header { text-align:center; padding:15px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+    .container { max-width:700px; margin:30px auto; background:#fff; padding:20px; border-radius:8px; }
 
-    h1,h2 { font-family:'Forum',serif; color:#333; text-align:center }
+    h1,h2 { font-family:'Forum',serif; color:#333; text-align:center; }
 
-    /* URL LIGHTBOX */
+    /* Lightbox */
     #url-lightbox {
       position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center;
-      z-index:1000;
+      background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:1000;
     }
     .lightbox-content {
       background:#fff; padding:24px; border-radius:8px; text-align:center; max-width:90%;
@@ -36,88 +31,53 @@
     .lightbox-content button {
       background:#007BFF; color:#fff; border:none; border-radius:4px; cursor:pointer;
     }
-    .lightbox-content button:hover { background:#0056b3 }
+    .lightbox-content button:hover { background:#0056b3; }
 
-    /* SCORE EXPLANATION LIGHTBOX */
+    /* Score Lightbox */
     #score-lightbox {
       position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center;
-      z-index:2000;
+      background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:2000;
     }
-    #score-lightbox .lightbox-content {
-      background:#fff; padding:24px; border-radius:8px; position:relative; max-width:90%; text-align:left;
-    }
+    #score-lightbox .lightbox-content { background:#fff; padding:24px; border-radius:8px; position:relative; max-width:90%; text-align:left; }
     #score-lightbox-close {
-      position:absolute; top:8px; right:12px; font-size:20px; cursor:pointer;
-      background:none; border:none; color:#000;
+      position:absolute; top:8px; right:12px; font-size:20px; cursor:pointer; background:none; border:none; color:#000;
     }
 
-    /* SUMMARY UI */
-    #waiting-message { display:none; text-align:center; font-style:italic; margin:10px 0 }
-    .error-message  { color:red; text-align:center; margin:10px 0 }
+    .error-message { color:red; text-align:center; margin:10px 0; }
+    #waiting-message { display:none; text-align:center; font-style:italic; margin:10px 0; }
 
-    .score-container {
-      display:flex; align-items:center; justify-content:center; gap:8px; margin:16px 0;
-    }
+    .score-container { display:flex; align-items:center; justify-content:center; gap:8px; margin:16px 0; }
     .info-icon {
-      cursor:pointer; background:#007BFF; color:#fff; border-radius:50%;
-      width:20px; height:20px; display:flex; align-items:center; justify-content:center;
-      font-size:12px;
+      cursor:pointer; background:#007BFF; color:#fff; border-radius:50%; width:20px; height:20px;
+      display:flex; align-items:center; justify-content:center; font-size:12px;
     }
     .score-indicator {
-      position:relative; width:50%; height:20px;
-      background:linear-gradient(to right, red,yellow,green); border-radius:10px; overflow:hidden;
+      position:relative; width:50%; height:20px; background:linear-gradient(to right, red,yellow,green);
+      border-radius:10px; overflow:hidden;
     }
     .score-marker {
-      position:absolute; top:0; left:0; width:2px; height:100%; background:#000;
-      animation:bounce 2s infinite ease-in-out;
+      position:absolute; top:0; left:0; width:2px; height:100%; background:#000; animation:bounce 2s infinite ease-in-out;
     }
     .score-percentage {
-      position:absolute; top:0; left:0; width:100%; line-height:20px;
-      text-align:center; font-size:0.9em; color:#000;
+      position:absolute; top:0; left:0; width:100%; line-height:20px; text-align:center;
+      font-size:0.9em; color:#000; pointer-events:none;
     }
-    @keyframes bounce { 0%,100% { left:0 } 50% { left:100% } }
+    @keyframes bounce { 0%,100%{left:0}50%{left:100%} }
 
     ul { padding:0; list-style:none; }
     li { margin:8px 0; }
     .title { font-weight:bold; }
     .explanation { font-size:0.9em; color:#555; }
 
-    /* CONTACT FORM */
-    .form-container {
-      width:80%; max-width:400px; margin:24px auto; text-align:center;
-    }
+    .form-container { width:80%; max-width:400px; margin:24px auto; text-align:center; }
     .form-container input,
-    .form-container button {
-      width:100%; padding:8px; margin:6px 0; font-size:1em;
-    }
-    .form-container button {
-      background:#007BFF; color:#fff; border:none; cursor:pointer;
-    }
+    .form-container button { width:100%; padding:8px; margin:6px 0; font-size:1em; }
+    .form-container button { background:#007BFF; color:#fff; border:none; cursor:pointer; }
   </style>
-  <!-- SECTION: STYLES END -->
-
-  <!-- SECTION: FIREBASE & BACKEND CONFIG START -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script>
-    firebase.initializeApp({
-      apiKey: "AIzaSyBDSiVrtYRrDWTFCrbsZh1ud9ih_VJ1wgI",
-      authDomain: "ai-seo-analyser.firebaseapp.com",
-      projectId: "ai-seo-analyser",
-      storageBucket: "ai-seo-analyser.firebasestorage.app",
-      messagingSenderId: "137290326304",
-      appId: "1:137290326304:web:cd50abaa0c0775e78eb745",
-      measurementId: "G-Z1EP67F84G"
-    });
-    const db = firebase.firestore();
-    const BACKEND_URL = 'https://ai-seo-backend-final.onrender.com';
-  </script>
-  <!-- SECTION: FIREBASE & BACKEND CONFIG END -->
 </head>
 <body>
 
-  <!-- SECTION: URL LIGHTBOX START -->
+  <!-- URL Entry -->
   <div id="url-lightbox">
     <div class="lightbox-content">
       <h2>SnipeRank</h2>
@@ -126,20 +86,18 @@
       <button id="analyzeButton">Analyze</button>
     </div>
   </div>
-  <!-- SECTION: URL LIGHTBOX END -->
 
-  <!-- SECTION: HEADER START -->
+  <!-- Header -->
   <header><h2>Yoram Ezra Strategies</h2></header>
-  <!-- SECTION: HEADER END -->
 
-  <!-- SECTION: SUMMARY CONTAINER START -->
+  <!-- Summary Container -->
   <div class="container">
     <h1>Summary Report</h1>
     <p>URL inspected: <strong id="inspected-url">Waiting…</strong></p>
     <p id="waiting-message">Scanning… this can take up to a minute.</p>
     <div class="error-message" id="errorMsg"></div>
 
-    <!-- Score bar START -->
+    <!-- Score -->
     <div class="score-container">
       <div class="info-icon" id="infoIcon">?</div>
       <div>Score:</div>
@@ -148,24 +106,20 @@
         <div id="score-percentage" class="score-percentage">0%</div>
       </div>
     </div>
-    <!-- Score bar END -->
 
-    <!-- Superpowers list START -->
+    <!-- Superpowers -->
     <h2>Superpowers (✔️ up to 5)</h2>
     <ul id="superpowers-list"></ul>
-    <!-- Superpowers list END -->
 
-    <!-- Opportunities list START -->
+    <!-- Opportunities -->
     <h2>Opportunities (🚨 up to 10)</h2>
     <ul id="opportunities-list"></ul>
-    <!-- Opportunities list END -->
 
-    <!-- Engine insights list START -->
+    <!-- Engine Insights -->
     <h2>AI Engine Insights (🤖)</h2>
     <ul id="engine-insights-list"></ul>
-    <!-- Engine insights list END -->
 
-    <!-- Contact form START -->
+    <!-- Contact Form -->
     <div class="form-container">
       <form id="summaryForm">
         <input type="text" name="name" placeholder="Your Name*" required>
@@ -174,11 +128,9 @@
         <button type="submit">Get Full Report</button>
       </form>
     </div>
-    <!-- Contact form END -->
   </div>
-  <!-- SECTION: SUMMARY CONTAINER END -->
 
-  <!-- SECTION: SCORE LIGHTBOX START -->
+  <!-- Score Explanation Lightbox -->
   <div id="score-lightbox">
     <div class="lightbox-content">
       <button id="score-lightbox-close">&times;</button>
@@ -192,122 +144,87 @@
       </ul>
     </div>
   </div>
-  <!-- SECTION: SCORE LIGHTBOX END -->
 
-  <!-- SECTION: MAIN SCRIPT START -->
+  <!-- Main Script -->
   <script>
+    // Your live Render URL:
+    const BACKEND_URL = 'https://ai-seo-backend-final.onrender.com';
+
     document.addEventListener('DOMContentLoaded', () => {
       let summaryData;
-      const urlInput          = document.getElementById('urlInput');
-      const analyzeButton     = document.getElementById('analyzeButton');
-      const urlLightbox       = document.getElementById('url-lightbox');
-      const waitingMessage    = document.getElementById('waiting-message');
-      const inspectedUrl      = document.getElementById('inspected-url');
-      const scoreMarker       = document.getElementById('score-marker');
-      const scorePercentage   = document.getElementById('score-percentage');
-      const superList         = document.getElementById('superpowers-list');
-      const oppList           = document.getElementById('opportunities-list');
-      const insightList       = document.getElementById('engine-insights-list');
-      const summaryForm       = document.getElementById('summaryForm');
-      const infoIcon          = document.getElementById('infoIcon');
-      const scoreLightbox     = document.getElementById('score-lightbox');
-      const scoreLightboxClose= document.getElementById('score-lightbox-close');
-      const errorMsg          = document.getElementById('errorMsg');
+      const ui = {
+        urlBox:       document.getElementById('url-lightbox'),
+        urlInput:     document.getElementById('urlInput'),
+        analyzeBtn:   document.getElementById('analyzeButton'),
+        waitingMsg:   document.getElementById('waiting-message'),
+        inspected:    document.getElementById('inspected-url'),
+        errorMsg:     document.getElementById('errorMsg'),
+        scoreMkr:     document.getElementById('score-marker'),
+        scorePct:     document.getElementById('score-percentage'),
+        superList:    document.getElementById('superpowers-list'),
+        oppList:      document.getElementById('opportunities-list'),
+        insightList:  document.getElementById('engine-insights-list'),
+        summaryForm:  document.getElementById('summaryForm'),
+        infoIcon:     document.getElementById('infoIcon'),
+        scoreBox:     document.getElementById('score-lightbox'),
+        scoreClose:   document.getElementById('score-lightbox-close'),
+      };
 
       function renderSummary() {
-        waitingMessage.style.display = 'none';
-        scoreMarker.style.animation = 'none';
-        scoreMarker.style.left = summaryData.score + '%';
-        scorePercentage.textContent = summaryData.score + '%';
-        superList.innerHTML = summaryData.ai_superpowers
-          .map(i => `<li><div class="title">✅ ${i.title}</div><div class="explanation">${i.explanation}</div></li>`)
-          .join('');
-        oppList.innerHTML = summaryData.ai_opportunities
-          .map(i => `<li><div class="title">🚨 ${i.title}</div><div class="explanation">${i.explanation}</div></li>`)
-          .join('');
-        insightList.innerHTML = Object.entries(summaryData.ai_engine_insights)
-          .map(([eng, txt]) => `<li><div class="title">🤖 ${eng}</div><div class="explanation">${txt}</div></li>`)
-          .join('');
+        ui.waitingMsg.style.display = 'none';
+        ui.scoreMkr.style.animation = 'none';
+        ui.scoreMkr.style.left      = summaryData.score + '%';
+        ui.scorePct.textContent     = summaryData.score + '%';
+        ui.superList.innerHTML      = summaryData.ai_superpowers
+          .map(i => `<li><div class="title">✅ ${i.title}</div><div class="explanation">${i.explanation}</div></li>`).join('');
+        ui.oppList.innerHTML        = summaryData.ai_opportunities
+          .map(i => `<li><div class="title">🚨 ${i.title}</div><div class="explanation">${i.explanation}</div></li>`).join('');
+        ui.insightList.innerHTML    = Object.entries(summaryData.ai_engine_insights)
+          .map(([eng, txt]) => `<li><div class="title">🤖 ${eng}</div><div class="explanation">${txt}</div></li>`).join('');
       }
 
-      function analyzeURL() {
-        errorMsg.textContent = '';
-        waitingMessage.style.display = 'block';
-        let raw = urlInput.value.trim();
+      async function analyzeURL() {
+        ui.errorMsg.textContent = '';
+        ui.waitingMsg.style.display = 'block';
+        let raw = ui.urlInput.value.trim();
         if (!raw) {
-          errorMsg.textContent = 'Please enter a URL.';
-          waitingMessage.style.display = 'none';
+          ui.errorMsg.textContent = 'Please enter a URL.';
+          ui.waitingMsg.style.display = 'none';
           return;
         }
         const url = /^(https?:\/\/)/i.test(raw) ? raw : 'https://' + raw;
-        inspectedUrl.textContent = url;
-        urlLightbox.style.display = 'none';
+        ui.inspected.textContent = url;
+        ui.urlBox.style.display  = 'none';
 
-        fetch(`${BACKEND_URL}/friendly?type=summary&url=${encodeURIComponent(url)}`)
-          .then(res => {
-            if (!res.ok) throw new Error(`Server error ${res.status}`);
-            return res.json();
-          })
-          .then(data => {
-            summaryData = data;
-            renderSummary();
-          })
-          .catch(() => {
-            // Fallback: client‑side parse via AllOrigins
-            fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
-              .then(r => r.text())
-              .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const title = doc.querySelector('title')?.textContent.trim() || 'No title';
-                const desc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || 'No description';
-                const h1s = doc.querySelectorAll('h1').length;
-                const imgs = Array.from(doc.querySelectorAll('img'));
-                const missing = imgs.filter(i => !i.alt);
-                summaryData = {
-                  score: Math.max(0, 100 - missing.length * 10),
-                  ai_superpowers: [
-                    { title: 'Title Tag', explanation: `Page title: "${title}".` },
-                    { title: 'Meta Description', explanation: `Meta description: "${desc}".` },
-                    { title: h1s===1?'Single H1 Tag':'H1 Tags', explanation: `Found ${h1s} H1(s).` }
-                  ],
-                  ai_opportunities: missing.length
-                    ? missing.slice(0,10).map(() => ({ title: 'Image missing alt', explanation: 'Image without alt text.' }))
-                    : [{ title: 'All images have alt', explanation: 'Every image has alt text.' }],
-                  ai_engine_insights: { 'Browser Fallback': 'Parsed HTML client‑side via AllOrigins.' }
-                };
-                renderSummary();
-              })
-              .catch(err => {
-                waitingMessage.style.display = 'none';
-                console.error(err);
-                errorMsg.textContent = 'Unable to fetch summary.';
-              });
-          });
+        try {
+          const res = await fetch(`${BACKEND_URL}/friendly?type=summary&url=${encodeURIComponent(url)}`);
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || `Server ${res.status}`);
+          }
+          summaryData = await res.json();
+          renderSummary();
+        } catch (err) {
+          ui.waitingMsg.style.display = 'none';
+          ui.errorMsg.textContent = `Error fetching summary: ${err.message}`;
+          console.error(err);
+        }
       }
 
-      analyzeButton.addEventListener('click', analyzeURL);
-      urlInput.addEventListener('keydown', e => { if (e.key==='Enter') analyzeURL(); });
+      ui.analyzeBtn.addEventListener('click', analyzeURL);
+      ui.urlInput.addEventListener('keydown', e => { if (e.key==='Enter') analyzeURL(); });
 
-      summaryForm.addEventListener('submit', async e => {
+      ui.summaryForm.addEventListener('submit', e => {
         e.preventDefault();
-        const name    = e.target.name.value.trim();
-        const email   = e.target.email.value.trim();
-        const company = e.target.company.value.trim();
-        await db.collection('reports').add({
-          name, email, company,
-          url: inspectedUrl.textContent,
-          summary: summaryData,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        window.location.href = `/full-report.html?url=${encodeURIComponent(inspectedUrl.textContent)}`;
+        localStorage.setItem('userName', e.target.name.value.trim());
+        localStorage.setItem('userEmail', e.target.email.value.trim());
+        localStorage.setItem('userCompany', e.target.company.value.trim());
+        window.location.href = `/public/full-report.html?url=${encodeURIComponent(ui.inspected.textContent)}`;
       });
 
-      infoIcon.addEventListener('click',      () => scoreLightbox.style.display='flex');
-      scoreLightboxClose.addEventListener('click', () => scoreLightbox.style.display='none');
+      ui.infoIcon.addEventListener('click', () => ui.scoreBox.style.display = 'flex');
+      ui.scoreClose.addEventListener('click', () => ui.scoreBox.style.display = 'none');
     });
   </script>
-  <!-- SECTION: MAIN SCRIPT END -->
-
 </body>
 </html>
