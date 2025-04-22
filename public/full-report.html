@@ -1,67 +1,143 @@
-<!-- Last updated: 2025-04-20 12:50 PM ET -->
-
+<!-- Last updated: 2025-04-22 13:50 ET -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full AI SEO Report</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:,">
+  <title>SnipeRank AI‑SEO Detailed Report</title>
+
+  <!-- SECTION: Google Fonts START -->
+  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- SECTION: Google Fonts END -->
+
+  <!-- SECTION: STYLES START -->
+  <style>
+    body { font-family:'Nunito Sans',sans-serif; background:#f9f9f9; margin:0; padding:0 }
+    header { text-align:center; padding:15px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1) }
+    .container { max-width:700px; margin:30px auto; background:#fff; padding:20px; border-radius:8px }
+    h1,h2 { font-family:'Forum',serif; color:#333; text-align:center }
+    ul { padding:0; list-style:none; margin:0 }
+    li { margin:8px 0 }
+    .title { font-weight:bold }
+    .explanation { font-size:0.9em; color:#555 }
+    .form-container { width:80%; max-width:400px; margin:24px auto; text-align:center }
+    .form-container input, .form-container button { width:100%; padding:8px; margin:6px 0; font-size:1em }
+    .form-container button { background:#007BFF; color:#fff; border:none; cursor:pointer }
+    .error-message { color:red; text-align:center; margin:10px 0 }
+  </style>
+  <!-- SECTION: STYLES END -->
+
+  <!-- SECTION: FIREBASE & BACKEND CONFIG START -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyBDSiVrtYRrDWTFCrbsZh1ud9ih_VJ1wgI",
+      authDomain: "ai-seo-analyser.firebaseapp.com",
+      projectId: "ai-seo-analyser",
+      storageBucket: "ai-seo-analyser.firebasestorage.app",
+      messagingSenderId: "137290326304",
+      appId: "1:137290326304:web:cd50abaa0c0775e78eb745",
+      measurementId: "G-Z1EP67F84G"
+    });
+    const db = firebase.firestore();
+    const BACKEND_URL = 'https://ai-seo-backend-final.onrender.com';
+  </script>
+  <!-- SECTION: FIREBASE & BACKEND CONFIG END -->
 </head>
-<body class="bg-white text-black font-sans p-6">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold mb-6">Full AI SEO Report</h1>
+<body>
 
-    <div id="reportContainer" class="space-y-8">
-      <div>
-        <h2 class="text-2xl font-semibold">Overall Score</h2>
-        <p id="score" class="text-3xl mt-2 font-bold text-green-600"></p>
-      </div>
+  <!-- HEADER START -->
+  <header><h2>Yoram Ezra Strategies</h2></header>
+  <!-- HEADER END -->
 
-      <div>
-        <h2 class="text-2xl font-semibold">What's Working for AI SEO ✅</h2>
-        <ul id="superpowersList" class="list-disc ml-6 mt-2 text-green-800"></ul>
-      </div>
+  <!-- CONTAINER START -->
+  <div class="container">
+    <h1>Detailed AI‑SEO Report</h1>
+    <p>URL: <strong id="report-url">Loading…</strong></p>
+    <p>Score: <strong id="report-score">Loading…</strong></p>
+    <div class="error-message" id="errorReport"></div>
 
-      <div>
-        <h2 class="text-2xl font-semibold">What Needs Improvement 🛠</h2>
-        <ul id="opportunitiesList" class="list-disc ml-6 mt-2 text-red-700"></ul>
-      </div>
+    <!-- Superpowers START -->
+    <h2>What’s Working (10–15)</h2>
+    <ul id="full-superpowers"></ul>
+    <!-- Superpowers END -->
 
-      <div>
-        <h2 class="text-2xl font-semibold">AI Engine Feedback 💡</h2>
-        <ul id="engineInsightsList" class="ml-4 mt-2 space-y-1 text-gray-800"></ul>
-      </div>
-    </div>
+    <!-- Opportunities START -->
+    <h2>Needs Improvement (15–25)</h2>
+    <ul id="full-opportunities"></ul>
+    <!-- Opportunities END -->
 
-    <div class="mt-12 border-t pt-6">
-      <h2 class="text-2xl font-semibold mb-4">Let’s Fix Your SEO Issues — Free!</h2>
-      <form id="contactForm" class="space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label for="name" class="block mb-1 font-medium">Name</label>
-            <input type="text" id="name" name="name" class="w-full border border-gray-300 p-2 rounded" required>
-          </div>
-          <div>
-            <label for="email" class="block mb-1 font-medium">Email</label>
-            <input type="email" id="email" name="email" class="w-full border border-gray-300 p-2 rounded" required>
-          </div>
-        </div>
-        <div>
-          <label for="company" class="block mb-1 font-medium">Company / Organization</label>
-          <input type="text" id="company" name="company" class="w-full border border-gray-300 p-2 rounded">
-        </div>
-        <div>
-          <label for="phone" class="block mb-1 font-medium">Phone Number</label>
-          <input type="text" id="phone" name="phone" class="w-full border border-gray-300 p-2 rounded">
-        </div>
-        <button type="submit" class="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">Submit</button>
+    <!-- Insights START -->
+    <h2>AI Engine Insights 💡</h2>
+    <ul id="full-insights"></ul>
+    <!-- Insights END -->
+
+    <!-- Contact Form START -->
+    <div class="form-container">
+      <form id="fullReportForm">
+        <input type="text" id="fullName" placeholder="Your Name*" required>
+        <input type="email" id="fullEmail" placeholder="Your Email*" required>
+        <input type="text" id="fullCompany" placeholder="Company / Org (optional)">
+        <button type="submit">Submit Report Request</button>
       </form>
-      <div id="contactStatus" class="mt-4 text-sm"></div>
     </div>
+    <!-- Contact Form END -->
   </div>
+  <!-- CONTAINER END -->
 
-  <script src="full-report.js"></script>
+  <!-- MAIN SCRIPT START -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const url = params.get('url') || localStorage.getItem('targetURL');
+      document.getElementById('report-url').textContent = url;
+
+      document.getElementById('fullName').value    = localStorage.getItem('userName') || '';
+      document.getElementById('fullEmail').value   = localStorage.getItem('userEmail') || '';
+      document.getElementById('fullCompany').value = localStorage.getItem('userCompany') || '';
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/friendly?type=full&url=${encodeURIComponent(url)}`);
+        if (!res.ok) throw new Error(`Server ${res.status}`);
+        const data = await res.json();
+
+        document.getElementById('report-score').textContent = data.score + '%';
+
+        const render = (id, items, emoji) => {
+          document.getElementById(id).innerHTML = items.map(i =>
+            `<li><div class="title">${emoji} ${i.title}</div><div class="explanation">${i.explanation}</div></li>`
+          ).join('');
+        };
+
+        render('full-superpowers', data.ai_superpowers,   '✅');
+        render('full-opportunities', data.ai_opportunities,'🚨');
+        render('full-insights',
+               Object.entries(data.ai_engine_insights).map(([e,t])=>({title:e,explanation:t})),
+               '🤖');
+
+        localStorage.setItem('fullData', JSON.stringify(data));
+      } catch (err) {
+        console.error(err);
+        document.getElementById('errorReport').textContent = `Error loading report: ${err.message}`;
+      }
+
+      document.getElementById('fullReportForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name    = document.getElementById('fullName').value.trim();
+        const email   = document.getElementById('fullEmail').value.trim();
+        const company = document.getElementById('fullCompany').value.trim();
+        const data    = JSON.parse(localStorage.getItem('fullData')||'{}');
+
+        await db.collection('reports').add({
+          name, email, company, url, fullReport: data,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('errorReport').style.color = 'green';
+        document.getElementById('errorReport').textContent = '✅ Saved!';
+      });
+    });
+  </script>
+  <!-- MAIN SCRIPT END -->
+
 </body>
 </html>

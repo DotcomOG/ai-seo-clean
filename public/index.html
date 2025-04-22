@@ -1,45 +1,313 @@
-<!--- 4/20 12:36PM -->
-
+<!-- Last updated: 2025-04-22 13:50 ET -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI SEO Analysis</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="data:,">
+  <meta charset="UTF-8">
+  <title>SnipeRank AI‑SEO Summary Report</title>
+
+  <!-- SECTION: Google Fonts START -->
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Forum&family=Nunito+Sans:wght@300;400;700&display=swap" 
+    rel="stylesheet"
+  >
+  <!-- SECTION: Google Fonts END -->
+
+  <!-- SECTION: STYLES START -->
+  <style>
+    body { font-family:'Nunito Sans',sans-serif; background:#f9f9f9; margin:0; padding:0 }
+    header { text-align:center; padding:15px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1) }
+    .container { max-width:700px; margin:30px auto; background:#fff; padding:20px; border-radius:8px }
+
+    h1,h2 { font-family:'Forum',serif; color:#333; text-align:center }
+
+    /* URL LIGHTBOX */
+    #url-lightbox {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center;
+      z-index:1000;
+    }
+    .lightbox-content {
+      background:#fff; padding:24px; border-radius:8px; text-align:center; max-width:90%;
+    }
+    .lightbox-content input,
+    .lightbox-content button {
+      width:90%; max-width:360px; padding:10px; margin:10px 0; font-size:1em;
+    }
+    .lightbox-content button {
+      background:#007BFF; color:#fff; border:none; border-radius:4px; cursor:pointer;
+    }
+    .lightbox-content button:hover { background:#0056b3 }
+
+    /* SCORE EXPLANATION LIGHTBOX */
+    #score-lightbox {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center;
+      z-index:2000;
+    }
+    #score-lightbox .lightbox-content {
+      background:#fff; padding:24px; border-radius:8px; position:relative; max-width:90%; text-align:left;
+    }
+    #score-lightbox-close {
+      position:absolute; top:8px; right:12px; font-size:20px; cursor:pointer;
+      background:none; border:none; color:#000;
+    }
+
+    /* SUMMARY UI */
+    #waiting-message { display:none; text-align:center; font-style:italic; margin:10px 0 }
+    .error-message  { color:red; text-align:center; margin:10px 0 }
+
+    .score-container {
+      display:flex; align-items:center; justify-content:center; gap:8px; margin:16px 0;
+    }
+    .info-icon {
+      cursor:pointer; background:#007BFF; color:#fff; border-radius:50%;
+      width:20px; height:20px; display:flex; align-items:center; justify-content:center;
+      font-size:12px;
+    }
+    .score-indicator {
+      position:relative; width:50%; height:20px;
+      background:linear-gradient(to right, red,yellow,green); border-radius:10px; overflow:hidden;
+    }
+    .score-marker {
+      position:absolute; top:0; left:0; width:2px; height:100%; background:#000;
+      animation:bounce 2s infinite ease-in-out;
+    }
+    .score-percentage {
+      position:absolute; top:0; left:0; width:100%; line-height:20px;
+      text-align:center; font-size:0.9em; color:#000;
+    }
+    @keyframes bounce { 0%,100% { left:0 } 50% { left:100% } }
+
+    ul { padding:0; list-style:none; }
+    li { margin:8px 0; }
+    .title { font-weight:bold; }
+    .explanation { font-size:0.9em; color:#555; }
+
+    /* CONTACT FORM */
+    .form-container {
+      width:80%; max-width:400px; margin:24px auto; text-align:center;
+    }
+    .form-container input,
+    .form-container button {
+      width:100%; padding:8px; margin:6px 0; font-size:1em;
+    }
+    .form-container button {
+      background:#007BFF; color:#fff; border:none; cursor:pointer;
+    }
+  </style>
+  <!-- SECTION: STYLES END -->
+
+  <!-- SECTION: FIREBASE & BACKEND CONFIG START -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyBDSiVrtYRrDWTFCrbsZh1ud9ih_VJ1wgI",
+      authDomain: "ai-seo-analyser.firebaseapp.com",
+      projectId: "ai-seo-analyser",
+      storageBucket: "ai-seo-analyser.firebasestorage.app",
+      messagingSenderId: "137290326304",
+      appId: "1:137290326304:web:cd50abaa0c0775e78eb745",
+      measurementId: "G-Z1EP67F84G"
+    });
+    const db = firebase.firestore();
+    const BACKEND_URL = 'https://ai-seo-backend-final.onrender.com';
+  </script>
+  <!-- SECTION: FIREBASE & BACKEND CONFIG END -->
 </head>
-<body class="bg-white text-black font-sans p-6">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold mb-6">AI SEO Analysis</h1>
+<body>
 
-    <form id="seoForm" class="mb-8 space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label for="name" class="block mb-1 font-medium">Name</label>
-          <input id="name" name="name" type="text" class="w-full border border-gray-300 p-2 rounded" required />
-        </div>
-        <div>
-          <label for="email" class="block mb-1 font-medium">Email</label>
-          <input id="email" name="email" type="email" class="w-full border border-gray-300 p-2 rounded" required />
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label for="company" class="block mb-1 font-medium">Company / Organization</label>
-          <input id="company" name="company" type="text" class="w-full border border-gray-300 p-2 rounded" />
-        </div>
-        <div class="flex items-end">
-          <button type="submit" class="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 w-full">
-            Run Analysis
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div id="loading" class="text-blue-500 mb-6 hidden">Running analysis, please wait...</div>
+  <!-- SECTION: URL LIGHTBOX START -->
+  <div id="url-lightbox">
+    <div class="lightbox-content">
+      <h2>SnipeRank</h2>
+      <p>Enter any website URL to get an AI‑SEO summary.</p>
+      <input type="text" id="urlInput" placeholder="example.com or https://example.com">
+      <button id="analyzeButton">Analyze</button>
+    </div>
   </div>
-<script type="module" src="index.js"></script>
+  <!-- SECTION: URL LIGHTBOX END -->
+
+  <!-- SECTION: HEADER START -->
+  <header><h2>Yoram Ezra Strategies</h2></header>
+  <!-- SECTION: HEADER END -->
+
+  <!-- SECTION: SUMMARY CONTAINER START -->
+  <div class="container">
+    <h1>Summary Report</h1>
+    <p>URL inspected: <strong id="inspected-url">Waiting…</strong></p>
+    <p id="waiting-message">Scanning… this can take up to a minute.</p>
+    <div class="error-message" id="errorMsg"></div>
+
+    <!-- Score bar START -->
+    <div class="score-container">
+      <div class="info-icon" id="infoIcon">?</div>
+      <div>Score:</div>
+      <div class="score-indicator">
+        <div id="score-marker" class="score-marker"></div>
+        <div id="score-percentage" class="score-percentage">0%</div>
+      </div>
+    </div>
+    <!-- Score bar END -->
+
+    <!-- Superpowers list START -->
+    <h2>Superpowers (✔️ up to 5)</h2>
+    <ul id="superpowers-list"></ul>
+    <!-- Superpowers list END -->
+
+    <!-- Opportunities list START -->
+    <h2>Opportunities (🚨 up to 10)</h2>
+    <ul id="opportunities-list"></ul>
+    <!-- Opportunities list END -->
+
+    <!-- Engine insights list START -->
+    <h2>AI Engine Insights (🤖)</h2>
+    <ul id="engine-insights-list"></ul>
+    <!-- Engine insights list END -->
+
+    <!-- Contact form START -->
+    <div class="form-container">
+      <form id="summaryForm">
+        <input type="text" name="name" placeholder="Your Name*" required>
+        <input type="email" name="email" placeholder="Your Email*" required>
+        <input type="text" name="company" placeholder="Company / Org (optional)">
+        <button type="submit">Get Full Report</button>
+      </form>
+    </div>
+    <!-- Contact form END -->
+  </div>
+  <!-- SECTION: SUMMARY CONTAINER END -->
+
+  <!-- SECTION: SCORE LIGHTBOX START -->
+  <div id="score-lightbox">
+    <div class="lightbox-content">
+      <button id="score-lightbox-close">&times;</button>
+      <h2>Score Explained</h2>
+      <ul>
+        <li><strong>0–20:</strong> Critical AI‑SEO issues</li>
+        <li><strong>21–40:</strong> Severe AI‑SEO issues</li>
+        <li><strong>41–60:</strong> Moderate AI‑SEO issues</li>
+        <li><strong>61–80:</strong> Minor AI‑SEO issues</li>
+        <li><strong>81–100:</strong> Excellent AI‑SEO health</li>
+      </ul>
+    </div>
+  </div>
+  <!-- SECTION: SCORE LIGHTBOX END -->
+
+  <!-- SECTION: MAIN SCRIPT START -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let summaryData;
+      const urlInput          = document.getElementById('urlInput');
+      const analyzeButton     = document.getElementById('analyzeButton');
+      const urlLightbox       = document.getElementById('url-lightbox');
+      const waitingMessage    = document.getElementById('waiting-message');
+      const inspectedUrl      = document.getElementById('inspected-url');
+      const scoreMarker       = document.getElementById('score-marker');
+      const scorePercentage   = document.getElementById('score-percentage');
+      const superList         = document.getElementById('superpowers-list');
+      const oppList           = document.getElementById('opportunities-list');
+      const insightList       = document.getElementById('engine-insights-list');
+      const summaryForm       = document.getElementById('summaryForm');
+      const infoIcon          = document.getElementById('infoIcon');
+      const scoreLightbox     = document.getElementById('score-lightbox');
+      const scoreLightboxClose= document.getElementById('score-lightbox-close');
+      const errorMsg          = document.getElementById('errorMsg');
+
+      function renderSummary() {
+        waitingMessage.style.display = 'none';
+        scoreMarker.style.animation = 'none';
+        scoreMarker.style.left = summaryData.score + '%';
+        scorePercentage.textContent = summaryData.score + '%';
+        superList.innerHTML = summaryData.ai_superpowers
+          .map(i => `<li><div class="title">✅ ${i.title}</div><div class="explanation">${i.explanation}</div></li>`)
+          .join('');
+        oppList.innerHTML = summaryData.ai_opportunities
+          .map(i => `<li><div class="title">🚨 ${i.title}</div><div class="explanation">${i.explanation}</div></li>`)
+          .join('');
+        insightList.innerHTML = Object.entries(summaryData.ai_engine_insights)
+          .map(([eng, txt]) => `<li><div class="title">🤖 ${eng}</div><div class="explanation">${txt}</div></li>`)
+          .join('');
+      }
+
+      function analyzeURL() {
+        errorMsg.textContent = '';
+        waitingMessage.style.display = 'block';
+        let raw = urlInput.value.trim();
+        if (!raw) {
+          errorMsg.textContent = 'Please enter a URL.';
+          waitingMessage.style.display = 'none';
+          return;
+        }
+        const url = /^(https?:\/\/)/i.test(raw) ? raw : 'https://' + raw;
+        inspectedUrl.textContent = url;
+        urlLightbox.style.display = 'none';
+
+        fetch(`${BACKEND_URL}/friendly?type=summary&url=${encodeURIComponent(url)}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`Server error ${res.status}`);
+            return res.json();
+          })
+          .then(data => {
+            summaryData = data;
+            renderSummary();
+          })
+          .catch(() => {
+            // Fallback: client‑side parse via AllOrigins
+            fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`)
+              .then(r => r.text())
+              .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const title = doc.querySelector('title')?.textContent.trim() || 'No title';
+                const desc = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || 'No description';
+                const h1s = doc.querySelectorAll('h1').length;
+                const imgs = Array.from(doc.querySelectorAll('img'));
+                const missing = imgs.filter(i => !i.alt);
+                summaryData = {
+                  score: Math.max(0, 100 - missing.length * 10),
+                  ai_superpowers: [
+                    { title: 'Title Tag', explanation: `Page title: "${title}".` },
+                    { title: 'Meta Description', explanation: `Meta description: "${desc}".` },
+                    { title: h1s===1?'Single H1 Tag':'H1 Tags', explanation: `Found ${h1s} H1(s).` }
+                  ],
+                  ai_opportunities: missing.length
+                    ? missing.slice(0,10).map(() => ({ title: 'Image missing alt', explanation: 'Image without alt text.' }))
+                    : [{ title: 'All images have alt', explanation: 'Every image has alt text.' }],
+                  ai_engine_insights: { 'Browser Fallback': 'Parsed HTML client‑side via AllOrigins.' }
+                };
+                renderSummary();
+              })
+              .catch(err => {
+                waitingMessage.style.display = 'none';
+                console.error(err);
+                errorMsg.textContent = 'Unable to fetch summary.';
+              });
+          });
+      }
+
+      analyzeButton.addEventListener('click', analyzeURL);
+      urlInput.addEventListener('keydown', e => { if (e.key==='Enter') analyzeURL(); });
+
+      summaryForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const name    = e.target.name.value.trim();
+        const email   = e.target.email.value.trim();
+        const company = e.target.company.value.trim();
+        await db.collection('reports').add({
+          name, email, company,
+          url: inspectedUrl.textContent,
+          summary: summaryData,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        window.location.href = `/full-report.html?url=${encodeURIComponent(inspectedUrl.textContent)}`;
+      });
+
+      infoIcon.addEventListener('click',      () => scoreLightbox.style.display='flex');
+      scoreLightboxClose.addEventListener('click', () => scoreLightbox.style.display='none');
+    });
+  </script>
+  <!-- SECTION: MAIN SCRIPT END -->
 
 </body>
 </html>
